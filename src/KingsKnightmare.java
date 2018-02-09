@@ -167,13 +167,7 @@ public class KingsKnightmare {
 		Stack<Location> frontier = new Stack<Location>();
 		ArrayList<Location> explored = new ArrayList<Location>();
 		frontier.push(knight);
-		Location endState = king;
-		
-		
-		
-//		boolean start = false;
-
-		
+		Location endState = king;		
 		searchLoop:
 			while (!frontier.isEmpty()) {
 				Location currentState = frontier.pop();
