@@ -175,60 +175,38 @@ public class KingsKnightmare {
 
 		
 		searchLoop:
-		while (!frontier.isEmpty()) {
-			
-			
-			for(Location x:frontier) {
-				System.out.print(x.toString()+ ";  ");
-			}
-			System.out.println();
-
-			
-			Location currentState = frontier.pop();
-			explored.add(currentState);
-			
-			
-			
-			
-			
-			if(currentState.getX()==46 && currentState.getY()==0) {
-				boolean start =true;
-			}
-//			if (start) {
-//				System.out.println(currentState.getX()+" "+currentState.getY());
-//			}
-			
-			
-			
-			if (currentState.equals(king)) {
-				endState = currentState;
-				break searchLoop;
-			} else {
-				ArrayList<Location> successors = successors(currentState);
-				// add successors to frontier if not explored and not in frontier
-				for (Location s : successors) {
+			while (!frontier.isEmpty()) {
+				Location currentState = frontier.pop();
+				explored.add(currentState);
+				if (currentState.equals(king)) {
+					endState = currentState;
+					break searchLoop;
+				} else {
+					ArrayList<Location> successors = successors(currentState);
+					// add successors to frontier if not explored and not in frontier
+					for (Location s : successors) {
 						if(s.equals(king)) {
 							endState=s;
 							break searchLoop;
 						}
-					boolean isExplored = false;
-					boolean isFrontier = false;
-					for (Location e : explored) {
-						if (s.equals(e)) {
-							isExplored = true;
+						boolean isExplored = false;
+						boolean isFrontier = false;
+						for (Location e : explored) {
+							if (s.equals(e)) {
+								isExplored = true;
+							}
 						}
-					}
-					for(Location f: frontier) {
-						if(s.equals(f)) {
-							isFrontier = true;
+						for(Location f: frontier) {
+							if(s.equals(f)) {
+								isFrontier = true;
+							}
 						}
-					}
-					if (!isExplored && !isFrontier) {
-						frontier.push(s);
+						if (!isExplored && !isFrontier) {
+							frontier.push(s);
+						}
 					}
 				}
 			}
-		}
 		printPath(endState, explored);
 	}
 
@@ -246,7 +224,7 @@ public class KingsKnightmare {
 				System.out.println(positions.pop());
 			}
 		}
-		System.out.println("ExpandedNotes: " + explored.size());
+		System.out.println("Expanded Notes: " + explored.size());
 	}
 
 	/**
