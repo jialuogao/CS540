@@ -120,13 +120,13 @@ public class KingsKnightmare {
 	private static void executeBFS() {
 		// TODO: Implement bfs algorithm in this method
 		Queue<Location> frontier = new LinkedList<Location>();
-		ArrayList<Location> explored = new ArrayList<Location>();
+		boolean[][] explored = new boolean[n][m];
 		frontier.add(knight);
 		Location endState = king;
 		searchLoop:
 			while(!frontier.isEmpty()){
 				Location currentState = frontier.poll();
-				explored.add(currentState);			
+				explored[currentState.getY()][currentState.getX()]=true;			
 				if (currentState.equals(king)) {
 					endState = currentState;
 					break searchLoop;
@@ -138,13 +138,8 @@ public class KingsKnightmare {
 							endState=s;
 							break searchLoop;
 						}
-						boolean isExplored = false;
+						boolean isExplored = explored[s.getY()][s.getX()];
 						boolean isFrontier = false;
-						for (Location e : explored) {
-							if (s.equals(e)) {
-								isExplored = true;
-							}
-						}
 						for(Location f: frontier) {
 							if(s.equals(f)) {
 								isFrontier = true;
@@ -165,13 +160,13 @@ public class KingsKnightmare {
 	private static void executeDFS() {
 		// TODO: Implement dfs algorithm in this method
 		Stack<Location> frontier = new Stack<Location>();
-		ArrayList<Location> explored = new ArrayList<Location>();
+		boolean[][] explored = new boolean[n][m];
 		frontier.push(knight);
 		Location endState = king;		
 		searchLoop:
 			while (!frontier.isEmpty()) {
 				Location currentState = frontier.pop();
-				explored.add(currentState);
+				explored[currentState.getY()][currentState.getX()]=true;
 				if (currentState.equals(king)) {
 					endState = currentState;
 					break searchLoop;
@@ -183,13 +178,8 @@ public class KingsKnightmare {
 							endState=s;
 							break searchLoop;
 						}
-						boolean isExplored = false;
+						boolean isExplored = explored[s.getY()][s.getX()];
 						boolean isFrontier = false;
-						for (Location e : explored) {
-							if (s.equals(e)) {
-								isExplored = true;
-							}
-						}
 						for(Location f: frontier) {
 							if(s.equals(f)) {
 								isFrontier = true;
@@ -203,8 +193,12 @@ public class KingsKnightmare {
 			}
 		printPath(endState, explored);
 	}
-
-	private static void printPath(Location endState, ArrayList<Location> explored) {
+	/**
+	 * This method prints all output info needed
+	 * @param endState the last state of search
+	 * @param explored
+	 */
+	private static void printPath(Location endState, boolean[][] explored) {
 		if (endState.getParent() == null) {
 			System.out.println("NOT REACHABLE");
 		} else {
@@ -218,9 +212,24 @@ public class KingsKnightmare {
 				System.out.println(positions.pop());
 			}
 		}
-		System.out.println("Expanded Notes: " + explored.size());
+		System.out.println("Expanded Notes: " + countExplored(explored));
 	}
-
+	/**
+	 * This method count how many nodes are explored
+	 * @param explored
+	 * @return count number as an integer 
+	 */
+	private static int countExplored(boolean[][] explored) {
+		int count = 0;
+		for(boolean[] y:explored) {
+			for(boolean x: y) {
+				if(x) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 	/**
 	 * This method generate successors
 	 * 
