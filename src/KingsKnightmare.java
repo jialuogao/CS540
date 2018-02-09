@@ -136,7 +136,7 @@ public class KingsKnightmare {
 //		boolean start = false;
 
 		
-		
+		searchLoop:
 		while (!frontier.isEmpty()) {
 			Location currentState = frontier.pop();
 			explored.add(currentState);
@@ -151,13 +151,16 @@ public class KingsKnightmare {
 //			if (start) {
 //				System.out.println(currentState.getX()+" "+currentState.getY());
 //			}
-			
-			
+			for(Location x:frontier) {
+				System.out.print(x.toString()+ ";");
+			}
+			System.out.println();
 			
 			
 			
 			if (currentState.equals(king)) {
 				endState = currentState;
+				break searchLoop;
 			} else {
 				ArrayList<Location> successors = successors(currentState);
 				// add successors to frontier if not explored
@@ -184,7 +187,7 @@ public class KingsKnightmare {
 			Stack<String> positions = new Stack<String>();
 			Location state = endState;
 			while(state!=null) {
-				positions.push(state.getX()+" "+state.getY());
+				positions.push(state.toString());
 				state = state.getParent();
 			};
 			while(!positions.empty()) {
