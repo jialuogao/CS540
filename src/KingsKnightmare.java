@@ -119,6 +119,44 @@ public class KingsKnightmare {
 	 */
 	private static void executeBFS() {
 		// TODO: Implement bfs algorithm in this method
+		Queue<Location> frontier = new LinkedList<Location>();
+		ArrayList<Location> explored = new ArrayList<Location>();
+		frontier.add(knight);
+		Location endState = king;
+		searchLoop:
+			while(!frontier.isEmpty()){
+				Location currentState = frontier.poll();
+				explored.add(currentState);			
+				if (currentState.equals(king)) {
+					endState = currentState;
+					break searchLoop;
+				} else {
+					ArrayList<Location> successors = successors(currentState);
+					// add successors to frontier if not explored and not in frontier
+					for (Location s : successors) {
+						if(s.equals(king)) {
+							endState=s;
+							break searchLoop;
+						}
+						boolean isExplored = false;
+						boolean isFrontier = false;
+						for (Location e : explored) {
+							if (s.equals(e)) {
+								isExplored = true;
+							}
+						}
+						for(Location f: frontier) {
+							if(s.equals(f)) {
+								isFrontier = true;
+							}
+						}
+						if (!isExplored && !isFrontier) {
+							frontier.add(s);
+						}
+					}
+				}
+			}
+		printPath(endState, explored);
 	}
 
 	/**
@@ -169,6 +207,10 @@ public class KingsKnightmare {
 				ArrayList<Location> successors = successors(currentState);
 				// add successors to frontier if not explored and not in frontier
 				for (Location s : successors) {
+						if(s.equals(king)) {
+							endState=s;
+							break searchLoop;
+						}
 					boolean isExplored = false;
 					boolean isFrontier = false;
 					for (Location e : explored) {
