@@ -138,6 +138,14 @@ public class KingsKnightmare {
 		
 		searchLoop:
 		while (!frontier.isEmpty()) {
+			
+			
+			for(Location x:frontier) {
+				System.out.print(x.toString()+ ";  ");
+			}
+			System.out.println();
+
+			
 			Location currentState = frontier.pop();
 			explored.add(currentState);
 			
@@ -145,16 +153,12 @@ public class KingsKnightmare {
 			
 			
 			
-//			if(currentState.getX()==46 && currentState.getY()==0) {
-//				start =true;
-//			}
+			if(currentState.getX()==46 && currentState.getY()==0) {
+				boolean start =true;
+			}
 //			if (start) {
 //				System.out.println(currentState.getX()+" "+currentState.getY());
 //			}
-			for(Location x:frontier) {
-				System.out.print(x.toString()+ ";");
-			}
-			System.out.println();
 			
 			
 			
@@ -163,15 +167,21 @@ public class KingsKnightmare {
 				break searchLoop;
 			} else {
 				ArrayList<Location> successors = successors(currentState);
-				// add successors to frontier if not explored
+				// add successors to frontier if not explored and not in frontier
 				for (Location s : successors) {
 					boolean isExplored = false;
+					boolean isFrontier = false;
 					for (Location e : explored) {
 						if (s.equals(e)) {
 							isExplored = true;
 						}
 					}
-					if (!isExplored) {
+					for(Location f: frontier) {
+						if(s.equals(f)) {
+							isFrontier = true;
+						}
+					}
+					if (!isExplored && !isFrontier) {
 						frontier.push(s);
 					}
 				}
