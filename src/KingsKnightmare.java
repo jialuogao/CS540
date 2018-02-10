@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -112,8 +113,72 @@ public class KingsKnightmare {
 	 */
 	private static void executeAStar() {
 		// TODO: Implement A* algorithm in this method
+		PriorityQ<Location> frontier = new PriorityQ<Location>();
+		boolean[][] explored = new boolean[n][m];
+		frontier.add(knight, 0);
+		frontier.add(king, -999);
+		Location endState = king;
+		searchLoop:
+			while(!frontier.isEmpty()) {
+				
+				
+				
+//				int n = frontier.size();
+//				ArrayList<SimpleEntry<Location,Integer>> a = new ArrayList<>();
+//				for(int x=0;x<n;x++) {
+//					SimpleEntry<Location,Integer> b = frontier.poll();
+//					System.out.print(b.getKey().toString()+" ; ");
+//					a.add(b);
+//				}
+//				for(int x=0;x<n;x++) {
+//					frontier.add(a.get(x).getKey(), a.get(x).getValue());
+//				}
+//				System.out.println();
+				
+				
+				Location currentState = frontier.poll().getKey();
+//				if(currentState.getX()==5 && currentState.getY()==2) {
+//					System.out.println();
+//				}
+				explored[currentState.getY()][currentState.getX()]=true;
+				
+				
+//				for(boolean[] a:explored) {
+//					for(boolean b:a) {
+//						System.out.print(b+" ");
+//					}
+//					System.out.println();
+//				}
+//				System.out.println();
+//				
+//				
+				if(currentState.equals(king)) {
+					endState = currentState;
+					break searchLoop;
+				}else {
+					ArrayList<Location> successors = successors(currentState);
+					for (int i =successors.size()-1;i>-1;i--) {
+						Location s = successors.get(i);
+						if(s.equals(king)) {
+							endState=s;
+							break searchLoop;
+						}
+						boolean isExplored = explored[s.getY()][s.getX()];
+						boolean isFrontier = false;
+						if(frontier.exists(s)) {
+							isFrontier = true;
+							if(frontier.getPriorityScore(s)>function(s)) {
+								frontier.modifyEntry(s, function(s));					
+							}
+						}
+						if (!isExplored && !isFrontier) {
+							frontier.add(s, function(s));
+						}
+					}
+				}
+			}
+		printPath(endState, explored);
 	}
-
 	/**
 	 * Implementation of BFS algorithm
 	 */
@@ -192,6 +257,26 @@ public class KingsKnightmare {
 				}
 			}
 		printPath(endState, explored);
+	}
+	/**
+	 * This methods calculates f(n)
+	 * @param currentState current node
+	 * @return integer f(n)
+	 */
+	private static int function(Location currentState) {
+		return calcH(currentState)+calcG(currentState);
+	}
+	private static int calcH(Location currentState) {
+		int h = Math.abs(currentState.getX()-king.getX())+Math.abs(currentState.getY()-king.getY());
+		return h;
+	}
+	private static int calcG(Location currentState) {
+		int g = 0;
+		while(currentState.getParent()!=null) {
+			g+=3;
+			currentState = currentState.getParent();
+		}
+		return g;
 	}
 	/**
 	 * This method prints all output info needed
