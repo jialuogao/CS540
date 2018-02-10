@@ -119,30 +119,8 @@ public class KingsKnightmare {
 		frontier.add(king, -999);
 		Location endState = king;
 		searchLoop:
-			while(!frontier.isEmpty()) {
-				
-				
-				
-//				int n = frontier.size();
-//				ArrayList<SimpleEntry<Location,Integer>> a = new ArrayList<>();
-//				for(int x=0;x<n;x++) {
-//					SimpleEntry<Location,Integer> b = frontier.poll();
-//					System.out.print(b.getKey().toString()+" ; ");
-//					a.add(b);
-//				}
-//				for(int x=0;x<n;x++) {
-//					frontier.add(a.get(x).getKey(), a.get(x).getValue());
-//				}
-//				System.out.println();
-				
-				
+			while(!frontier.isEmpty()) {			
 				Location currentState = frontier.poll().getKey();
-//				if(currentState.getX()==5 && currentState.getY()==2) {
-//					System.out.println();
-//				}
-				explored[currentState.getY()][currentState.getX()]=true;
-				
-				
 				for(boolean[] a:explored) {
 					for(boolean b:a) {
 						System.out.print(b+" ");
@@ -150,19 +128,14 @@ public class KingsKnightmare {
 					System.out.println();
 				}
 				System.out.println();
-				
-				
 				if(currentState.equals(king)) {
 					endState = currentState;
 					break searchLoop;
 				}else {
+					explored[currentState.getY()][currentState.getX()]=true;
 					ArrayList<Location> successors = successors(currentState);
 					for (Location s :successors) {
 						//Location s = successors.get(i);
-						if(s.equals(king)) {
-							endState=s;
-							break searchLoop;
-						}
 						boolean isExplored = explored[s.getY()][s.getX()];
 						boolean isFrontier = false;
 						if(frontier.exists(s)) {
@@ -257,13 +230,6 @@ public class KingsKnightmare {
 				}
 			}
 		printPath(endState, explored);
-		for(boolean[] a:explored) {
-			for(boolean b:a) {
-				System.out.print(b+" ");
-			}
-			System.out.println();
-		}
-		System.out.println();
 	}
 	/**
 	 * This methods calculates f(n)
