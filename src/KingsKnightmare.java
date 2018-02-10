@@ -121,13 +121,6 @@ public class KingsKnightmare {
 		searchLoop:
 			while(!frontier.isEmpty()) {			
 				Location currentState = frontier.poll().getKey();
-				for(boolean[] a:explored) {
-					for(boolean b:a) {
-						System.out.print(b+" ");
-					}
-					System.out.println();
-				}
-				System.out.println();
 				if(currentState.equals(king)) {
 					endState = currentState;
 					break searchLoop;
