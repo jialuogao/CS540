@@ -143,22 +143,22 @@ public class KingsKnightmare {
 				explored[currentState.getY()][currentState.getX()]=true;
 				
 				
-//				for(boolean[] a:explored) {
-//					for(boolean b:a) {
-//						System.out.print(b+" ");
-//					}
-//					System.out.println();
-//				}
-//				System.out.println();
-//				
-//				
+				for(boolean[] a:explored) {
+					for(boolean b:a) {
+						System.out.print(b+" ");
+					}
+					System.out.println();
+				}
+				System.out.println();
+				
+				
 				if(currentState.equals(king)) {
 					endState = currentState;
 					break searchLoop;
 				}else {
 					ArrayList<Location> successors = successors(currentState);
-					for (int i =successors.size()-1;i>-1;i--) {
-						Location s = successors.get(i);
+					for (Location s :successors) {
+						//Location s = successors.get(i);
 						if(s.equals(king)) {
 							endState=s;
 							break searchLoop;
@@ -257,6 +257,13 @@ public class KingsKnightmare {
 				}
 			}
 		printPath(endState, explored);
+		for(boolean[] a:explored) {
+			for(boolean b:a) {
+				System.out.print(b+" ");
+			}
+			System.out.println();
+		}
+		System.out.println();
 	}
 	/**
 	 * This methods calculates f(n)
