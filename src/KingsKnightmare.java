@@ -263,7 +263,7 @@ public class KingsKnightmare {
 				System.out.println(positions.pop());
 			}
 		}
-		System.out.println("Expanded Notes: " + countExplored(explored));
+		System.out.println("Expanded Nodes: " + countExplored(explored));
 	}
 	/**
 	 * This method count how many nodes are explored
