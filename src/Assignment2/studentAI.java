@@ -1,3 +1,4 @@
+package Assignment2;
 public class studentAI extends Player {
     private int maxDepth;
 
