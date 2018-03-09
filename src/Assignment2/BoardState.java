@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * BoardState.java
  * Do not modify this file!

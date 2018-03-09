@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * MyPanel.java
  * Do not modify this file!
@@ -19,7 +20,7 @@ public class MyPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Image image = (new ImageIcon("wood-texture.jpg")).getImage();
+        Image image = (new ImageIcon("src/Assignment2/wood-texture.jpg")).getImage();
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
         setOpaque(false);
         super.paintComponent(g);

@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * Mancala.java
  * Do not modify this file!

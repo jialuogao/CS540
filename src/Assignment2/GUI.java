@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * GUI.java
  * Do not modify this file!

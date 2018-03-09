@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * BigPot.java
  * Do not modify this file!

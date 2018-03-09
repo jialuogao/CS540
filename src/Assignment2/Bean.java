@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * Bean.java
  * Do not modify this file!

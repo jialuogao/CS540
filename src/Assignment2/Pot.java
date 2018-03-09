@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * Pot.java
  * Do not modify this file!

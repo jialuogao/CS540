@@ -1,3 +1,4 @@
+package Assignment2;
 public abstract class Player {
     protected int move;  //stores the current best move for the player
 

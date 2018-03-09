@@ -1,3 +1,4 @@
+package Assignment2;
 /****************************************************************
  * HumanPlayer.java
  * Do not modify this file!
