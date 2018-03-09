@@ -1,0 +1,7 @@
+12 4
+0 0 0 0 0 0
+0 3 1 1 0 0
+
+maxValue(state, maxDepth, 10, -1000, 1000);
+
+// return 8

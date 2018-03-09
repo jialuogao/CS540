@@ -1,0 +1,7 @@
+3 8
+4 5 5 5 5 0
+0 5 5 5 5 4
+
+maxValue(state, maxDepth, 0, -1000, 1000);
+
+// return -5
