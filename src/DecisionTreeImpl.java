@@ -87,7 +87,7 @@ public class DecisionTreeImpl extends DecisionTree {
 				  subAttributes.add(attr);
 			  }
 		  }
-		  DecTreeNode subTree = buildTreeRec(partialInst,subAttributes,bestAttr,majorityLabel(instances));
+		  DecTreeNode subTree = buildTreeRec(partialInst,subAttributes,attrName,majorityLabel(instances));
 		  tree.addChild(subTree);
 	  }
 	  return tree;
