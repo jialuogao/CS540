@@ -52,7 +52,7 @@ public class DecisionTreeImpl extends DecisionTree {
     this.root = buildTreeRec(train.instances,this.attributes,null,majorityLabel(train.instances));
   }
   int x=0;
-  DecTreeNode buildTreeRec(List<Instance> instances, List<String> attributes, String parentAttrValue, String defaultLabel) {
+  private DecTreeNode buildTreeRec(List<Instance> instances, List<String> attributes, String parentAttrValue, String defaultLabel) {
 	  if(instances.isEmpty()) {
 		  return new DecTreeNode(defaultLabel,null,parentAttrValue,true);
 	  }
