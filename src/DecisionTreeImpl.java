@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.*;
-import java.lang.Math;
+import java.io.*;
 
 /**
  * Fill in the implementation details of the class DecisionTree using this file. Any methods or
@@ -49,21 +49,85 @@ public class DecisionTreeImpl extends DecisionTree {
     // this.labels contains the possible labels for an instance
     // this.attributes contains the whole set of attribute names
     // train.instances contains the list of instances
+    this.root = buildTreeRec(train.instances,this.attributes,null,majorityLabel(train.instances));
   }
 
+  DecTreeNode buildTreeRec(List<Instance> instances, List<String> attributes, String parentAttrValue, String defaultLabel) {
+	  if(instances.size()==0) {
+		  return new DecTreeNode(defaultLabel,null,parentAttrValue,true);
+	  }
+	  if(sameLabel(instances)) {
+		  return new DecTreeNode(instances.get(0).label,null,parentAttrValue,true);
+	  }
+	  if(attributes.size()==0) {
+		  return new DecTreeNode(majorityLabel(instances),null,parentAttrValue,true);
+	  }
+	  String bestAttr = "";
+	  double maxInfo = -1;
+	  for (String attr : attributes) {
+		  double info = InfoGain(instances, attr);
+		  if(info>maxInfo) {
+			  maxInfo = info;
+			  bestAttr = attr;
+		  }
+	  }
+	  DecTreeNode tree = new DecTreeNode(majorityLabel(instances),bestAttr,parentAttrValue,false);
+	  List<String> attrNames = attributeValues.get(bestAttr); 
+	  int attrIndex =  getAttributeIndex(bestAttr);
+	  for(String attrName: attrNames) {
+		  List<Instance> partialInst = new ArrayList<Instance>();
+		  for(Instance inst : instances) {
+			  if(inst.attributes.get(attrIndex).equals(attrName)) {
+				  partialInst.add(inst);
+			  }
+		  }
+		  List<String> subAttributes = new ArrayList<String>();
+		  for(String attr: attributes) {
+			  if(!attr.equals(bestAttr)) {
+				  subAttributes.add(attr);
+			  }
+		  }
+		  DecTreeNode subTree = buildTreeRec(partialInst,subAttributes,bestAttr,majorityLabel(instances));
+		  tree.addChild(subTree);
+	  }
+	  return tree;
+  }
+  
   boolean sameLabel(List<Instance> instances){
       // Suggested helper function
       // returns if all the instances have the same label
       // labels are in instances.get(i).label
       // TODO
-      return false;
+	  boolean sameLabel = true;
+	  for(int i=0;i<instances.size()-1;i++) {
+		  if(!instances.get(i).label.equals(instances.get(i+1).label)){
+			  sameLabel = false;
+		  }
+	  }
+      return sameLabel;
   }
 
   String majorityLabel(List<Instance> instances){
       // Suggested helper function
       // returns the majority label of a list of examples
       // TODO
-      return "";
+	  String majorityLabel = "";
+	  int majorityCount = 0;
+	  for(Instance inst: instances) {
+		  if(!inst.label.equals(majorityLabel)) {
+			  int labelCount = 0;
+			  for(Instance inst2: instances) {
+				  if(inst.label.equals(inst2.label)) {
+					  labelCount++;
+				  }
+			  }
+			  if(labelCount > majorityCount) {
+				  majorityLabel = inst.label;
+				  majorityCount = labelCount;
+			  }
+		  }
+	  }
+      return majorityLabel;
   }
 
   double entropy(List<Instance> instances){
@@ -82,10 +146,10 @@ public class DecisionTreeImpl extends DecisionTree {
 		double entropy;
 		double p1 = (double) numLabel1 / instances.size();
 		double p2 = (double) numLabel2 / instances.size();
-		if(p1 <= 0.00001) {
+		if(p1 <= 0.0000001) {
 			p1 = 1;
 		}
-		if(p2 <= 0.00001) {
+		if(p2 <= 0.0000001) {
 			p2 = 1;
 		}
 		entropy = -p1 * (Math.log(p1) / Math.log(2)) - p2 * (Math.log(p2) / Math.log(2));
@@ -120,7 +184,7 @@ public class DecisionTreeImpl extends DecisionTree {
 		  for(Instance inst : instances) {
 			  if(inst.attributes.get(attrIndex).equals(attrName)) {
 				  partialInst.add(inst);
-  }
+			  }
 		  }
 		  if(!partialInst.isEmpty()) {
 			  double entropy = entropy(partialInst);
