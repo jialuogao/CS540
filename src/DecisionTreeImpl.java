@@ -58,29 +58,90 @@ public class DecisionTreeImpl extends DecisionTree {
       // TODO
       return false;
   }
+
   String majorityLabel(List<Instance> instances){
       // Suggested helper function
       // returns the majority label of a list of examples
       // TODO
       return "";
   }
+
   double entropy(List<Instance> instances){
       // Suggested helper function
       // returns the Entropy of a list of examples
       // TODO
-      return 0.0;
+		int numLabel1 = 0;
+		int numLabel2 = 0;
+		for (Instance inst : instances) {
+			if (inst.label.equals(this.labels.get(0))) {
+				numLabel1++;
+			} else if (inst.label.equals(this.labels.get(1))) {
+				numLabel2++;
+			}
+		}
+		double entropy;
+		double p1 = (double) numLabel1 / instances.size();
+		double p2 = (double) numLabel2 / instances.size();
+		if(p1 <= 0.00001) {
+			p1 = 1;
+		}
+		if(p2 <= 0.00001) {
+			p2 = 1;
+		}
+		entropy = -p1 * (Math.log(p1) / Math.log(2)) - p2 * (Math.log(p2) / Math.log(2));
+		return entropy;
   }
+
   double conditionalEntropy(List<Instance> instances, String attr){
       // Suggested helper function
       // returns the conditional entropy of a list of examples, given the attribute attr
       // TODO
-      return 0.0;
+	  //this.attributeValues
+	  int attrIndex = getAttributeIndex(attr);
+	  List<String> attrNames = attributeValues.get(attr);
+	  int[] attrNameNum = new int[attrNames.size()];
+	  for(Instance inst : instances) {
+		  String attrValue = inst.attributes.get(attrIndex);
+		  for(String attrName : attrNames) {
+	    	if(attrName.equals(attrValue)) {
+	    		int attrNameIndex = getAttributeValueIndex(attr, attrName);
+	    		attrNameNum[attrNameIndex]++;
+	    	}
+		  }
+	  }
+	  double[] attrNameProb = new double[attrNameNum.length];
+	  for(int i=0;i<attrNameNum.length;i++) {
+		  attrNameProb[i] = (double)attrNameNum[i]/instances.size();
+	  }
+	  double[] probTimesEntropyArray = new double[attrNameProb.length];
+	  for(int i=0;i<attrNames.size();i++) {
+		  String attrName = attrNames.get(i);
+		  List<Instance> partialInst = new ArrayList<Instance>();
+		  for(Instance inst : instances) {
+			  if(inst.attributes.get(attrIndex).equals(attrName)) {
+				  partialInst.add(inst);
   }
+		  }
+		  if(!partialInst.isEmpty()) {
+			  double entropy = entropy(partialInst);
+//			  System.out.println("entropy "+entropy);
+//			  System.out.println("prob "+attrNameProb[i]);
+			  probTimesEntropyArray[i]=attrNameProb[i]*entropy;			  
+		  }
+	  }
+	  double conditionalEntropy = 0;
+	  for(double probTimesEntropy : probTimesEntropyArray) {
+		  conditionalEntropy += probTimesEntropy;
+	  }
+      return conditionalEntropy;
+  }
+
   double InfoGain(List<Instance> instances, String attr){
       // Suggested helper function
       // returns the info gain of a list of examples, given the attribute attr
       return entropy(instances) - conditionalEntropy(instances,attr);
   }
+
   @Override
   public String classify(Instance instance) {
       // TODO: Homework requirement
@@ -89,17 +150,24 @@ public class DecisionTreeImpl extends DecisionTree {
       // write a recusive helper function, to return the predicted label of instance
     return "";
   }
+
   @Override
   public void rootInfoGain(DataSet train) {
     this.labels = train.labels;
     this.attributes = train.attributes;
     this.attributeValues = train.attributeValues;
+		for (String attr : this.attributes) {
+			double info = InfoGain(train.instances, attr);
+			System.out.print(attr + " ");
+			System.out.format("%.5f\n", info);
+		}
     // TODO: Homework requirement
     // Print the Info Gain for using each attribute at the root node
     // The decision tree may not exist when this funcion is called.
     // But you just need to calculate the info gain with each attribute,
     // on the entire training set.
   }
+
   @Override
   public void printAccuracy(DataSet test) {
     // TODO: Homework requirement
