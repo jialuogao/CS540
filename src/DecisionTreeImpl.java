@@ -51,19 +51,21 @@ public class DecisionTreeImpl extends DecisionTree {
     // train.instances contains the list of instances
     this.root = buildTreeRec(train.instances,this.attributes,null,majorityLabel(train.instances));
   }
-
+  int x=0;
   DecTreeNode buildTreeRec(List<Instance> instances, List<String> attributes, String parentAttrValue, String defaultLabel) {
-	  if(instances.size()==0) {
+	  if(instances.isEmpty()) {
 		  return new DecTreeNode(defaultLabel,null,parentAttrValue,true);
 	  }
 	  if(sameLabel(instances)) {
 		  return new DecTreeNode(instances.get(0).label,null,parentAttrValue,true);
 	  }
-	  if(attributes.size()==0) {
+	  if(attributes.isEmpty()) {
 		  String value = parentAttrValue;
-		  if(parentAttrValue.equals("y")) {// && majorityLabel(instances).equals("B")) {
-			  System.out.println();
-		  }
+//		  if(parentAttrValue.equals("y")) {// && majorityLabel(instances).equals("B")) {
+//			  x++;
+//			  if(x==2)
+//				  System.out.println(x);
+//		  }
 		  return new DecTreeNode(majorityLabel(instances),null,parentAttrValue,true);
 	  }
 	  String bestAttr = "";
@@ -79,6 +81,9 @@ public class DecisionTreeImpl extends DecisionTree {
 	  List<String> attrNames = attributeValues.get(bestAttr); 
 	  int attrIndex =  getAttributeIndex(bestAttr);
 	  for(String attrName: attrNames) {
+//		  if(attrName.equals("y")) {
+//			  System.out.println();
+//		  }
 		  List<Instance> partialInst = new ArrayList<Instance>();
 		  for(Instance inst : instances) {
 			  if(inst.attributes.get(attrIndex).equals(attrName)) {
