@@ -60,6 +60,10 @@ public class DecisionTreeImpl extends DecisionTree {
 		  return new DecTreeNode(instances.get(0).label,null,parentAttrValue,true);
 	  }
 	  if(attributes.size()==0) {
+		  String value = parentAttrValue;
+		  if(parentAttrValue.equals("y")) {// && majorityLabel(instances).equals("B")) {
+			  System.out.println();
+		  }
 		  return new DecTreeNode(majorityLabel(instances),null,parentAttrValue,true);
 	  }
 	  String bestAttr = "";
