@@ -75,9 +75,6 @@ public class DecisionTreeImpl extends DecisionTree {
 	  List<String> attrNames = attributeValues.get(bestAttr); 
 	  int attrIndex =  getAttributeIndex(bestAttr);
 	  for(String attrName: attrNames) {
-//		  if(attrName.equals("y")) {
-//			  System.out.println();
-//		  }
 		  List<Instance> partialInst = new ArrayList<Instance>();
 		  for(Instance inst : instances) {
 			  if(inst.attributes.get(attrIndex).equals(attrName)) {
