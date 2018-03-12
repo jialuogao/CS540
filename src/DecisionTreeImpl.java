@@ -248,8 +248,15 @@ public class DecisionTreeImpl extends DecisionTree {
     // You need to call function classify, and compare the predicted labels.
     // List of instances: test.instances 
     // getting the real label: test.instances.get(i).label
-	
-    return;
+	int correctNum = 0;
+	for(Instance inst: test.instances) {
+		String predict = classify(inst);
+		if(predict.equals(inst.label)) {
+			correctNum++;
+		}
+	}
+	double accuracy = (double)correctNum/test.instances.size();
+	System.out.format("%.5f\n", accuracy);
   }
   
   @Override
