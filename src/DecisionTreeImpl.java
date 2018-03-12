@@ -63,7 +63,7 @@ public class DecisionTreeImpl extends DecisionTree {
 		  return new DecTreeNode(majorityLabel(instances),null,parentAttrValue,true);
 	  }
 	  String bestAttr = "";
-	  double maxInfo = -1;
+	  double maxInfo = Double.NEGATIVE_INFINITY;
 	  for (String attr : attributes) {
 		  double info = InfoGain(instances, attr);
 		  if(info>maxInfo) {
@@ -107,29 +107,49 @@ public class DecisionTreeImpl extends DecisionTree {
       return sameLabel;
   }
 
+//  String majorityLabel(List<Instance> instances){
+//      // Suggested helper function
+//      // returns the majority label of a list of examples
+//      // TODO
+//	  String majorityLabel = "";
+//	  int majorityCount = 0;
+//	  for(Instance inst: instances) {
+//		  if(!inst.label.equals(majorityLabel)) {
+//			  int labelCount = 0;
+//			  for(Instance inst2: instances) {
+//				  if(inst.label.equals(inst2.label)) {
+//					  labelCount++;
+//				  }
+//			  }
+//			  if(labelCount > majorityCount) {
+//				  majorityLabel = inst.label;
+//				  majorityCount = labelCount;
+//			  }
+//		  }
+//	  }
+//      return majorityLabel;
+//  }
+
   String majorityLabel(List<Instance> instances){
       // Suggested helper function
       // returns the majority label of a list of examples
       // TODO
-	  String majorityLabel = "";
-	  int majorityCount = 0;
+	  int[] labelCount = new int[labels.size()];
 	  for(Instance inst: instances) {
-		  if(!inst.label.equals(majorityLabel)) {
-			  int labelCount = 0;
-			  for(Instance inst2: instances) {
-				  if(inst.label.equals(inst2.label)) {
-					  labelCount++;
-				  }
-			  }
-			  if(labelCount > majorityCount) {
-				  majorityLabel = inst.label;
-				  majorityCount = labelCount;
-			  }
+		  labelCount[getLabelIndex(inst.label)]++;
+	  }
+	  int maxCount = -1;
+	  int maxIndex = -1;
+	  for(int i=0;i<labelCount.length;i++) {
+		  if(labelCount[i]>maxCount) {
+			  maxCount = labelCount[i];
+			  maxIndex = i;
 		  }
 	  }
+	  String majorityLabel = labels.get(maxIndex);
       return majorityLabel;
   }
-
+  
   double entropy(List<Instance> instances){
       // Suggested helper function
       // returns the Entropy of a list of examples
