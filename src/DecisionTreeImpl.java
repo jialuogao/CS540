@@ -107,29 +107,6 @@ public class DecisionTreeImpl extends DecisionTree {
       return sameLabel;
   }
 
-//  String majorityLabel(List<Instance> instances){
-//      // Suggested helper function
-//      // returns the majority label of a list of examples
-//      // TODO
-//	  String majorityLabel = "";
-//	  int majorityCount = 0;
-//	  for(Instance inst: instances) {
-//		  if(!inst.label.equals(majorityLabel)) {
-//			  int labelCount = 0;
-//			  for(Instance inst2: instances) {
-//				  if(inst.label.equals(inst2.label)) {
-//					  labelCount++;
-//				  }
-//			  }
-//			  if(labelCount > majorityCount) {
-//				  majorityLabel = inst.label;
-//				  majorityCount = labelCount;
-//			  }
-//		  }
-//	  }
-//      return majorityLabel;
-//  }
-
   String majorityLabel(List<Instance> instances){
       // Suggested helper function
       // returns the majority label of a list of examples
