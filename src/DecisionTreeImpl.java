@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.*;
-import java.io.*;
+import java.lang.Math;
 
 /**
  * Fill in the implementation details of the class DecisionTree using this file. Any methods or
@@ -188,8 +188,6 @@ public class DecisionTreeImpl extends DecisionTree {
 		  }
 		  if(!partialInst.isEmpty()) {
 			  double entropy = entropy(partialInst);
-//			  System.out.println("entropy "+entropy);
-//			  System.out.println("prob "+attrNameProb[i]);
 			  probTimesEntropyArray[i]=attrNameProb[i]*entropy;			  
 		  }
 	  }
@@ -212,7 +210,17 @@ public class DecisionTreeImpl extends DecisionTree {
       // The tree is already built, when this function is called
       // this.root will contain the learnt decision tree.
       // write a recusive helper function, to return the predicted label of instance
-    return "";
+	  DecTreeNode node = this.root;
+	  while(!node.terminal) {
+		  List<DecTreeNode> children = node.children;
+		  String divideAttr = node.attribute;
+		  int divideAttrIndex = getAttributeIndex(divideAttr);
+		  String attrValue = instance.attributes.get(divideAttrIndex);
+		  int childIndex = getAttributeValueIndex(divideAttr, attrValue);
+		  node = children.get(childIndex);
+	  }
+	  String classLabel=node.label;
+	  return classLabel;
   }
 
   @Override
@@ -220,16 +228,16 @@ public class DecisionTreeImpl extends DecisionTree {
     this.labels = train.labels;
     this.attributes = train.attributes;
     this.attributeValues = train.attributeValues;
-		for (String attr : this.attributes) {
-			double info = InfoGain(train.instances, attr);
-			System.out.print(attr + " ");
-			System.out.format("%.5f\n", info);
-		}
     // TODO: Homework requirement
     // Print the Info Gain for using each attribute at the root node
     // The decision tree may not exist when this funcion is called.
     // But you just need to calculate the info gain with each attribute,
     // on the entire training set.
+    for (String attr : this.attributes) {
+    	double info = InfoGain(train.instances, attr);
+    	System.out.print(attr + " ");
+    	System.out.format("%.5f\n", info);
+    }
   }
 
   @Override
@@ -240,6 +248,7 @@ public class DecisionTreeImpl extends DecisionTree {
     // You need to call function classify, and compare the predicted labels.
     // List of instances: test.instances 
     // getting the real label: test.instances.get(i).label
+	
     return;
   }
   
