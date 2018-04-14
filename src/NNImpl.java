@@ -89,7 +89,16 @@ public class NNImpl {
     	for(Node node: outputNodes) {
     		node.calculateOutput(outputNodes);
     	}
-        return -1;
+    	int predict = 0;
+    	double max = 0;
+    	for(int i=0; i<outputNodes.size(); i++) {
+    		double out = outputNodes.get(i).getOutput();
+    		if(out > max) {
+    			max = out;
+    			predict = i;
+    		}
+    	}
+        return predict;
     }
 
 
