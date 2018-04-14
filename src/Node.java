@@ -44,6 +44,13 @@ public class Node {
     public void calculateOutput() {
         if (type == 2 || type == 4) {   //Not an input or bias node
             // TODO: add code here
+        	double value = 0;
+        	for(NodeWeightPair in: parents) {
+        		Node node = in.node;
+        		double weight = in.weight;
+        		value+= node.outputValue * weight;
+        	}
+        	outputValue = Math.max(0, value);
         }
     }
 
