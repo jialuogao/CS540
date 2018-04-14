@@ -41,23 +41,32 @@ public class Node {
      * Calculate the output of a node.
      * You can get this value by using getOutput()
      */
-    public void calculateOutput() {
+    public void calculateOutput(ArrayList<Node> outputNodes) {
         if (type == 2 || type == 4) {   //Not an input or bias node
             // TODO: add code here
-        	double value = 0;
         	double z = 0;
         	for(NodeWeightPair in: parents) {
         		Node node = in.node;
         		double weight = in.weight;
         		z+= node.outputValue * weight;
         	}
-        	if(type == 2) {        		
-        		value = z;
-        		outputValue = Math.max(0, value);
+        	if(type == 2) {
+        		outputValue = Math.max(0, z);
         	}
         	else if(type == 4){
-        		Math.pow(Math.E,z)/sum(e^zk)
+        		double sum = 0;
+        		for(Node node : outputNodes) {
+        			double nodeValue = 0;
+        			for(NodeWeightPair in: node.parents) {
+                		nodeValue += in.node.outputValue * in.weight;
+        			}
+        			sum+=Math.pow(Math.E, nodeValue);
+        		}
+        		outputValue = Math.pow(Math.E,z)/sum;
         	}
+        }
+        else {
+        	System.out.println("wrong type");
         }
     }
 

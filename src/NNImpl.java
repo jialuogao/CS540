@@ -80,6 +80,15 @@ public class NNImpl {
 
     public int predict(Instance instance) {
         // TODO: add code here
+    	for(int i =0; i<inputNodes.size();i++) {
+    		inputNodes.get(i).setInput(instance.attributes.get(i));
+    	}
+    	for(Node node: hiddenNodes) {
+    		node.calculateOutput(null);
+    	}
+    	for(Node node: outputNodes) {
+    		node.calculateOutput(outputNodes);
+    	}
         return -1;
     }
 
