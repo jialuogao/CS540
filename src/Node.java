@@ -42,6 +42,9 @@ public class Node {
      * You can get this value by using getOutput()
      */
     public void calculateOutput(ArrayList<Node> outputNodes) {
+    	if (type == 0) {
+    		outputValue = inputValue;
+    	}
         if (type == 2 || type == 4) {   //Not an input or bias node
             // TODO: add code here
         	double g = g(outputNodes);
@@ -51,9 +54,6 @@ public class Node {
         	else {
         		System.out.println("calculate output wrong type 1 "+type);
         	}
-        }
-        else {
-        	System.out.println("calculate output wrong type 2 "+type);
         }
     }
 
@@ -132,6 +132,7 @@ public class Node {
     public double calcReLU() {
     	double value = calcWeightedInputSum(this);
     	value = Math.max(0, value);
+    	//System.out.println(value);
 		return value;
     }
     
@@ -149,6 +150,7 @@ public class Node {
     	double value = 0;
     	for(NodeWeightPair in: node.parents) {
     		value+= in.node.outputValue * in.weight;
+    		//System.out.println(in.node.outputValue);
     	}
     	return value;
     }

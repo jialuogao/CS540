@@ -159,14 +159,22 @@ public class NNImpl {
     
     private void useNN(Instance instance) {
     	for(int i =0; i<inputNodes.size()-1;i++) {
-			inputNodes.get(i).setInput(instance.attributes.get(i));    			
+			Node node = inputNodes.get(i);
+    		node.setInput(instance.attributes.get(i));
+			node.calculateOutput(null);
+			//System.out.print(instance.attributes.get(i)+"  ");
     	}
+    	//System.out.println();
     	for(int i =0; i<hiddenNodes.size()-1;i++) {
     		Node node = hiddenNodes.get(i);
     		node.calculateOutput(null);
+    		//System.out.print(node.getOutput()+"  ");
     	}
+    	//System.out.println();
     	for(Node node: outputNodes) {
     		node.calculateOutput(outputNodes);
+    		//System.out.print(node.getOutput()+"  ");
     	}
+    	//System.out.println();
     }
 }
