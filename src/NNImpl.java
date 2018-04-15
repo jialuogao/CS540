@@ -50,6 +50,10 @@ public class NNImpl {
             for (int j = 0; j < inputNodes.size(); j++) {
                 NodeWeightPair nwp = new NodeWeightPair(inputNodes.get(j), hiddenWeights[i][j]);
                 node.parents.add(nwp);
+                
+                //add children
+                NodeWeightPair nwp2 = new NodeWeightPair(node, outputWeights[i][j]);//
+            	inputNodes.get(j).children.add(nwp2);//
             }
             hiddenNodes.add(node);
         }
@@ -64,8 +68,12 @@ public class NNImpl {
             Node node = new Node(4);
             //Connecting output layer nodes with hidden layer nodes
             for (int j = 0; j < hiddenNodes.size(); j++) {
-                NodeWeightPair nwp = new NodeWeightPair(hiddenNodes.get(j), outputWeights[i][j]);
-                node.parents.add(nwp);
+                NodeWeightPair nwp = new NodeWeightPair(hiddenNodes.get(j), outputWeights[i][j]);                
+            	node.parents.add(nwp);
+            	
+            	//add children
+            	NodeWeightPair nwp2 = new NodeWeightPair(node, outputWeights[i][j]);//
+            	hiddenNodes.get(j).children.add(nwp2);//
             }
             outputNodes.add(node);
         }
@@ -109,6 +117,8 @@ public class NNImpl {
     		double dldz = 
     	}
     	totleE/=trainingSet.size();
+    	
+    	
     }
 
     /**
