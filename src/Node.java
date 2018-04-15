@@ -9,7 +9,7 @@ import java.util.*;
 public class Node {
     private int type = 0; //0=input,1=biasToHidden,2=hidden,3=biasToOutput,4=Output
     public ArrayList<NodeWeightPair> parents = null; //Array List that will contain the parents (including the bias node) with weights if applicable
-    public ArrayList<NodeWeightPair> children = null;
+//    public ArrayList<NodeWeightPair> children = null;
     private double inputValue = 0.0;
     private double outputValue = 0.0;
     private double outputGradient = 0.0;
@@ -49,11 +49,11 @@ public class Node {
         		outputValue = g;
         	}
         	else {
-        		System.out.println("wrong type");
+        		System.out.println("calculate output wrong type 1 "+type);
         	}
         }
         else {
-        	System.out.println("wrong type");
+        	System.out.println("calculate output wrong type 2 "+type);
         }
     }
 
@@ -70,30 +70,27 @@ public class Node {
 
     }
 
-    public double getDelta() {
-    	if(type==2||type==4) {
-    		return delta;
-    	}
-    	else {
-    		System.out.println("wrong type");
-    	}
-    	return -9999999;
-    }
+//    public double getDelta() {
+//    	if(type==2||type==4) {
+//    		return delta;
+//    	}
+//    	else {
+//    		System.out.println("wrong type");
+//    	}
+//    	return -9999999;
+//    }
     //Calculate the delta value of a node.
     public void calculateDelta(double targetValue, ArrayList<Node> outputNodes, int nodeIndex) {
         if (type == 2 || type == 4)  {
         	// TODO: add code here
         	double delta = 0;
         	if(type == 2) {
-        		delta = gPrimeReLU() * calcWeightedOutputDelta(this);
+        		delta = gPrimeReLU() * calcWeightedOutputDelta(outputNodes,nodeIndex);
         	}
         	else if(type == 4){
         		delta = targetValue - g(outputNodes); 
         	}
         	this.delta = delta;
-        }
-        else {
-        	System.out.println("wrong type");
         }
     }
 
@@ -103,8 +100,9 @@ public class Node {
         if (type == 2 || type == 4) {
             // TODO: add code here
         	for(NodeWeightPair parentPair: this.parents) {
-        		double deltaW = learningRate * outputValue * delta;
+        		double deltaW = learningRate * parentPair.node.outputValue * delta;
         		parentPair.weight+=deltaW;
+        		//System.out.println(learningRate+" "+parentPair.node.outputValue+" "+delta);
         	}
         }
     }
@@ -156,10 +154,10 @@ public class Node {
     }
 
     //weighted sum from children
-    public double calcWeightedOutputDelta(Node node) {
+    public double calcWeightedOutputDelta(ArrayList<Node> outputNodes,int nodeIndex) {
     	double value = 0;
-    	for(NodeWeightPair in: node.children) {
-    		value+= in.node.delta * in.weight;
+    	for(Node node: outputNodes) {
+    		value+= node.parents.get(nodeIndex).weight*delta;
     	}
     	return value;
     }
