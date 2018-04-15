@@ -70,8 +70,17 @@ public class Node {
 
     }
 
+    public double getDelta() {
+    	if(type==2||type==4) {
+    		return delta;
+    	}
+    	else {
+    		System.out.println("wrong type");
+    	}
+    	return -9999999;
+    }
     //Calculate the delta value of a node.
-    public void calculateDelta(double targetValue, ArrayList<Node> outputNodes) {
+    public void calculateDelta(double targetValue, ArrayList<Node> outputNodes, int nodeIndex) {
         if (type == 2 || type == 4)  {
         	// TODO: add code here
         	double delta = 0;
@@ -93,9 +102,8 @@ public class Node {
     public void updateWeight(double learningRate) {
         if (type == 2 || type == 4) {
             // TODO: add code here
-        	for(NodeWeightPair parentPair: this.children) {sss
-        		Node parentNode = parentPair.node;
-        		double deltaW = learningRate * outputValue * parentNode.delta;
+        	for(NodeWeightPair parentPair: this.parents) {
+        		double deltaW = learningRate * outputValue * delta;
         		parentPair.weight+=deltaW;
         	}
         }

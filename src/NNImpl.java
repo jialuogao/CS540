@@ -112,8 +112,12 @@ public class NNImpl {
         // TODO: add code here
     	double totleE = 0;
     	for(Instance instance: trainingSet) {
-    		instance
-    		
+    		useNN(instance);
+    		for(int i =0;i<outputNodes.size();i++) {
+    			Node outNode = outputNodes.get(i);
+    			outNode.calculateDelta(instance.classValues.get(i), outputNodes);
+    			double delta = outNode.getDelta();
+    		}
     		
     		
     		double loss = loss(instance);
