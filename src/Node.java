@@ -93,7 +93,11 @@ public class Node {
     public void updateWeight(double learningRate) {
         if (type == 2 || type == 4) {
             // TODO: add code here
-        	double deltaW = learningRate * outputValue * delta;
+        	for(NodeWeightPair parentPair: this.children) {sss
+        		Node parentNode = parentPair.node;
+        		double deltaW = learningRate * outputValue * parentNode.delta;
+        		parentPair.weight+=deltaW;
+        	}
         }
     }
     

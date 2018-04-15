@@ -118,7 +118,27 @@ public class NNImpl {
     	}
     	totleE/=trainingSet.size();
     	
-    	
+//    	for each epoch
+//
+//        shuffle training data
+//
+//        for each training instance in trainingset
+//
+//                  do training
+//
+//                  update weights
+//
+//        end of training set loop
+//
+//       for each training instance 
+//
+//               calculate total loss
+//
+//       end for
+//
+//      print average loss
+//
+//		end epoch loop
     }
 
     /**
@@ -132,9 +152,8 @@ public class NNImpl {
     	double ce = 0;
     	for(int i =0 ; i<outputNodes.size();i++) {
     		double g = outputNodes.get(i).getOutput();
-    		ce += instance.classValues.get(i)*Math.log(g);
+    		ce -= instance.classValues.get(i)*Math.log(g);
     	}
-    	ce = -ce;
         return ce;
     }
     
