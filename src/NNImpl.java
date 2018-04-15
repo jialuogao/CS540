@@ -112,6 +112,10 @@ public class NNImpl {
         // TODO: add code here
     	double totleE = 0;
     	for(Instance instance: trainingSet) {
+    		instance
+    		
+    		
+    		
     		double loss = loss(instance);
     		totleE += loss;
     		double dldz = 
