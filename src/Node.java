@@ -51,7 +51,7 @@ public class Node {
         		z+= node.outputValue * weight;
         	}
         	if(type == 2) {
-        		outputValue = Math.max(0, z);
+        		this.outputValue = Math.max(0, z);
         	}
         	else if(type == 4){
         		double sum = 0;
@@ -62,7 +62,7 @@ public class Node {
         			}
         			sum+=Math.pow(Math.E, nodeValue);
         		}
-        		outputValue = Math.pow(Math.E,z)/sum;
+        		this.outputValue = Math.pow(Math.E,z)/sum;
         	}
         }
         else {
@@ -87,6 +87,9 @@ public class Node {
     public void calculateDelta() {
         if (type == 2 || type == 4)  {
             // TODO: add code here
+        	double delta = 0;
+        	
+        	this.delta = delta;
         }
     }
 

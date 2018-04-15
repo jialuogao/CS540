@@ -80,15 +80,7 @@ public class NNImpl {
 
     public int predict(Instance instance) {
         // TODO: add code here
-    	for(int i =0; i<inputNodes.size();i++) {
-    		inputNodes.get(i).setInput(instance.attributes.get(i));
-    	}
-    	for(Node node: hiddenNodes) {
-    		node.calculateOutput(null);
-    	}
-    	for(Node node: outputNodes) {
-    		node.calculateOutput(outputNodes);
-    	}
+    	useNN(instance);
     	int predict = 0;
     	double max = 0;
     	for(int i=0; i<outputNodes.size(); i++) {
@@ -110,6 +102,13 @@ public class NNImpl {
 
     public void train() {
         // TODO: add code here
+    	double totleE = 0;
+    	for(Instance instance: trainingSet) {
+    		double loss = loss(instance);
+    		totleE += loss;
+    		double dldz = 
+    	}
+    	totleE/=trainingSet.size();
     }
 
     /**
@@ -119,6 +118,25 @@ public class NNImpl {
      */
     private double loss(Instance instance) {
         // TODO: add code here
-        return -1.0;
+    	useNN(instance);
+    	double ce = 0;
+    	for(int i =0 ; i<outputNodes.size();i++) {
+    		double g = outputNodes.get(i).getOutput();
+    		ce += instance.classValues.get(i)*Math.log(g);
+    	}
+    	ce = -ce;
+        return ce;
+    }
+    
+    private void useNN(Instance instance) {
+    	for(int i =0; i<inputNodes.size();i++) {
+    		inputNodes.get(i).setInput(instance.attributes.get(i));
+    	}
+    	for(Node node: hiddenNodes) {
+    		node.calculateOutput(null);
+    	}
+    	for(Node node: outputNodes) {
+    		node.calculateOutput(outputNodes);
+    	}
     }
 }
