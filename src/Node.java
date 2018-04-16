@@ -98,7 +98,6 @@ public class Node {
             // TODO: add code here
         	for(NodeWeightPair parentPair: this.parents) {
         		double deltaW = learningRate * parentPair.node.getOutput() * delta;
-        		//double deltaW = learningRate * getOutput() * delta;
         		parentPair.weight+=deltaW;
         	}
         }
@@ -136,7 +135,6 @@ public class Node {
     	if(type == 2||type==4) {
     		double value = 0;
     		for(NodeWeightPair pair:parents) {
-    			//NodeWeightPair pair = this.parents.get(i);
     			value+= pair.node.getOutput() * pair.weight;
     		}
     		inputValue = value;    		
