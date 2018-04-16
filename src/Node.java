@@ -135,8 +135,8 @@ public class Node {
     public void calcWeightedInputSum() {
     	if(type == 2||type==4) {
     		double value = 0;
-    		for(int i = 0; i < this.parents.size(); i++) {
-    			NodeWeightPair pair = this.parents.get(i);
+    		for(NodeWeightPair pair:parents) {
+    			//NodeWeightPair pair = this.parents.get(i);
     			value+= pair.node.getOutput() * pair.weight;
     		}
     		inputValue = value;    		
