@@ -42,10 +42,7 @@ public class Node {
      * You can get this value by using getOutput()
      */
     public void calculateOutput(ArrayList<Node> outputNodes) {
-    	if (type == 0) {
-    		outputValue = inputValue;
-    	}
-    	else if (type == 2 || type == 4) {   //Not an input or bias node
+    	if (type == 2 || type == 4) {   //Not an input or bias node
             // TODO: add code here
         	double g = 0;
         	if(type == 2) {
@@ -109,7 +106,7 @@ public class Node {
 
     public double gPrimeReLU() {
     	if(type == 2) {
-    		if(calcWeightedInputSum(this)<0.0000001) {
+    		if(calcWeightedInputSum()<0.0000001) {
     			return 0;
     		}
     		else {
@@ -121,33 +118,24 @@ public class Node {
     
     public double calcReLU() {
     	double value = Math.max(0, inputValue);
-    	//System.out.println(inputValue +"   "+value);
-    	//System.out.println(value);
 		return value;
     }
     
-    public double getInput() {
-    	return inputValue;
-    }
     public double calcSoftMax(ArrayList<Node> outputNodes) {
     	double sum = 0;
     	double z = Math.exp(inputValue);
-//    	System.out.println(inputValue);
-//    	System.out.println(inputValue);
 		for(Node node : outputNodes) {
-			sum+=Math.exp(node.getInput());
-//			System.out.println(node.inputValue);
+			sum+=Math.exp(node.getOutput());
 		}
-//		System.out.println("a      "  +z);
-//		System.out.println("b       "+sum);
 		return z/sum;
     }
     
     //weighted sum from parents
-    public double calcWeightedInputSum(Node node) {
+    public double calcWeightedInputSum() {
     	double value = 0;
-    	for(NodeWeightPair in: node.parents) {
-    		value+= in.node.outputValue * in.weight;
+    	for(int j = 0; j < this.parents.size(); j++) {
+    		NodeWeightPair pair = this.parents.get(j);
+    		value+= pair.node.outputValue * pair.weight;
     	}
     	return value;
     }

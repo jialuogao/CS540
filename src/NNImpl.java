@@ -160,12 +160,12 @@ public class NNImpl {
 			node.calculateOutput(null);
     	}
     	for(Node node: hiddenNodes) {
-    		node.setInput(node.calcWeightedInputSum(node));
+    		node.setInput(node.calcWeightedInputSum());
     		node.calculateOutput(null);
     		System.out.println(node.getOutput());
     	}
     	for(Node node: outputNodes) {
-    		node.setInput(node.calcWeightedInputSum(node));
+    		node.setInput(node.calcWeightedInputSum());
     	}
     	for(Node node: outputNodes) {
     		node.calculateOutput(outputNodes);
