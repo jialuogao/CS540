@@ -9,14 +9,13 @@ import java.util.*;
 public class Node {
     private int type = 0; //0=input,1=biasToHidden,2=hidden,3=biasToOutput,4=Output
     public ArrayList<NodeWeightPair> parents = null; //Array List that will contain the parents (including the bias node) with weights if applicable
-//    public ArrayList<NodeWeightPair> children = null;
     private double inputValue = 0.0;
     private double outputValue = 0.0;
     private double outputGradient = 0.0;
     private double delta = 0.0; //input gradient
 
     //Create a node with a specific type
-    Node(int type) {
+    public Node(int type) {
         if (type > 4 || type < 0) {
             System.out.println("Incorrect value for node type");
             System.exit(1);
@@ -55,6 +54,9 @@ public class Node {
         }
     }
 
+    public double getInput() {
+    	return inputValue;
+    }
     //Gets the output value
     public double getOutput() {
 
@@ -72,7 +74,7 @@ public class Node {
     	if(type==2||type==4) {
     		return delta;
     	}
-    	return -9999999;
+    	return 0;
     }
     //Calculate the delta value of a node.
     public void calculateDelta(double targetValue, ArrayList<Node> outputNodes, int nodeIndex) {
@@ -81,7 +83,6 @@ public class Node {
         	double delta = 0;
         	if(type == 2) {
         		delta = gPrimeReLU() * calcWeightedOutputDelta(outputNodes,nodeIndex);
-        		//System.out.println(gPrimeReLU()+"  "+calcWeightedOutputDelta(outputNodes,nodeIndex));
         	}
         	else if(type == 4){
         		delta = targetValue - outputValue; 
@@ -96,9 +97,9 @@ public class Node {
         if (type == 2 || type == 4) {
             // TODO: add code here
         	for(NodeWeightPair parentPair: this.parents) {
-        		double deltaW = learningRate * outputValue * delta;
+        		double deltaW = learningRate * parentPair.node.getOutput() * delta;
+        		//double deltaW = learningRate * getOutput() * delta;
         		parentPair.weight+=deltaW;
-        		//System.out.println(learningRate+" "+parentPair.node.outputValue+" "+delta);
         	}
         }
     }
@@ -106,7 +107,7 @@ public class Node {
 
     public double gPrimeReLU() {
     	if(type == 2) {
-    		if(calcWeightedInputSum()<0.0000001) {
+    		if(inputValue<0.0000001) {
     			return 0;
     		}
     		else {
@@ -125,19 +126,21 @@ public class Node {
     	double sum = 0;
     	double z = Math.exp(inputValue);
 		for(Node node : outputNodes) {
-			sum+=Math.exp(node.getOutput());
+			sum+=Math.exp(node.getInput());
 		}
 		return z/sum;
     }
     
     //weighted sum from parents
-    public double calcWeightedInputSum() {
-    	double value = 0;
-    	for(int j = 0; j < this.parents.size(); j++) {
-    		NodeWeightPair pair = this.parents.get(j);
-    		value+= pair.node.outputValue * pair.weight;
+    public void calcWeightedInputSum() {
+    	if(type == 2||type==4) {
+    		double value = 0;
+    		for(int i = 0; i < this.parents.size(); i++) {
+    			NodeWeightPair pair = this.parents.get(i);
+    			value+= pair.node.getOutput() * pair.weight;
+    		}
+    		inputValue = value;    		
     	}
-    	return value;
     }
 
     //weighted sum from children
@@ -145,7 +148,6 @@ public class Node {
     	double value = 0;
     	for(Node node: outputNodes) {
     		value+= node.parents.get(nodeIndex).weight*node.delta;
-    		//System.out.println(node.parents.get(nodeIndex).weight+"  "+delta);
     	}
     	return value;
     }

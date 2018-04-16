@@ -107,20 +107,13 @@ public class NNImpl {
 	    	Collections.shuffle(trainingSet,random);
 	    	for(Instance instance: trainingSet) {
 	    		useNN(instance);
-	    		double loss = loss(instance);
-	    		totalE += loss;
 	    		for(int i =0;i<outputNodes.size();i++) {
 	    			Node outNode = outputNodes.get(i);
 	    			outNode.calculateDelta(instance.classValues.get(i), outputNodes,i);
-	    			
-	    			//System.out.println(outNode.getDelta());
 	    		}
-	    		//System.out.println();
 	    		for(int i = 0;i<hiddenNodes.size();i++) {
 	    			Node hidNode = hiddenNodes.get(i);
 	    			hidNode.calculateDelta(-99999,outputNodes, i);
-	    			
-	    			//System.out.println(hidNode.getDelta());
 	    		}
 	    		for(Node node : outputNodes) {
 	    			node.updateWeight(learningRate);
@@ -129,6 +122,9 @@ public class NNImpl {
 	    			node.updateWeight(learningRate);
 	    		}
 	        }
+	    	for(Instance inst : trainingSet) {
+	    		totalE+=loss(inst);
+	    	}
 	    	totalE/=trainingSet.size();
 	    	System.out.print("Epoch: " + j + ", Loss: ");
 	    	System.out.format("%.8e", totalE);
@@ -143,12 +139,11 @@ public class NNImpl {
      */
     private double loss(Instance instance) {
         // TODO: add code here
-    	//useNN(instance);
+    	useNN(instance);
     	double ce = 0;
     	for(int i =0 ; i<outputNodes.size();i++) {
     		double g = outputNodes.get(i).getOutput();
     		ce -= instance.classValues.get(i)*Math.log(g);
-    		//System.out.println("T:"+instance.classValues.get(i)+"  O:"+g);
     	}
         return ce;
     }
@@ -160,12 +155,11 @@ public class NNImpl {
 			node.calculateOutput(null);
     	}
     	for(Node node: hiddenNodes) {
-    		node.setInput(node.calcWeightedInputSum());
+    		node.calcWeightedInputSum();
     		node.calculateOutput(null);
-    		System.out.println(node.getOutput());
     	}
     	for(Node node: outputNodes) {
-    		node.setInput(node.calcWeightedInputSum());
+    		node.calcWeightedInputSum();
     	}
     	for(Node node: outputNodes) {
     		node.calculateOutput(outputNodes);
