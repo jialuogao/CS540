@@ -32,7 +32,7 @@ public class Node {
 
     //For an input node sets the input value which will be the value of a particular attribute
     public void setInput(double inputValue) {
-        if (type == 0) {    //If input node
+        if (type != 1 && type != 3) {
             this.inputValue = inputValue;
         }
     }
@@ -45,15 +45,16 @@ public class Node {
     	if (type == 0) {
     		outputValue = inputValue;
     	}
-        if (type == 2 || type == 4) {   //Not an input or bias node
+    	else if (type == 2 || type == 4) {   //Not an input or bias node
             // TODO: add code here
-        	double g = g(outputNodes);
-        	if(g!=-1) {
-        		outputValue = g;
+        	double g = 0;
+        	if(type == 2) {
+        		g = calcReLU(); 
         	}
-        	else {
-        		System.out.println("calculate output wrong type 1 "+type);
+        	else if(type == 4){
+        		g = calcSoftMax(outputNodes);
         	}
+    		outputValue = g;
         }
     }
 
@@ -70,15 +71,12 @@ public class Node {
 
     }
 
-//    public double getDelta() {
-//    	if(type==2||type==4) {
-//    		return delta;
-//    	}
-//    	else {
-//    		System.out.println("wrong type");
-//    	}
-//    	return -9999999;
-//    }
+    public double getDelta() {
+    	if(type==2||type==4) {
+    		return delta;
+    	}
+    	return -9999999;
+    }
     //Calculate the delta value of a node.
     public void calculateDelta(double targetValue, ArrayList<Node> outputNodes, int nodeIndex) {
         if (type == 2 || type == 4)  {
@@ -86,9 +84,10 @@ public class Node {
         	double delta = 0;
         	if(type == 2) {
         		delta = gPrimeReLU() * calcWeightedOutputDelta(outputNodes,nodeIndex);
+        		//System.out.println(gPrimeReLU()+"  "+calcWeightedOutputDelta(outputNodes,nodeIndex));
         	}
         	else if(type == 4){
-        		delta = targetValue - g(outputNodes); 
+        		delta = targetValue - outputValue; 
         	}
         	this.delta = delta;
         }
@@ -100,22 +99,13 @@ public class Node {
         if (type == 2 || type == 4) {
             // TODO: add code here
         	for(NodeWeightPair parentPair: this.parents) {
-        		double deltaW = learningRate * parentPair.node.outputValue * delta;
+        		double deltaW = learningRate * outputValue * delta;
         		parentPair.weight+=deltaW;
         		//System.out.println(learningRate+" "+parentPair.node.outputValue+" "+delta);
         	}
         }
     }
-    
-    private double g(ArrayList<Node> outputNodes) {
-    	if(type == 2) {
-    		return calcReLU(); 
-    	}
-    	else if(type == 4){
-    		return calcSoftMax(outputNodes);
-    	}
-    	return -1;
-    }
+
 
     public double gPrimeReLU() {
     	if(type == 2) {
@@ -130,27 +120,34 @@ public class Node {
     }
     
     public double calcReLU() {
-    	double value = calcWeightedInputSum(this);
-    	value = Math.max(0, value);
+    	double value = Math.max(0, inputValue);
+    	//System.out.println(inputValue +"   "+value);
     	//System.out.println(value);
 		return value;
     }
     
+    public double getInput() {
+    	return inputValue;
+    }
     public double calcSoftMax(ArrayList<Node> outputNodes) {
     	double sum = 0;
-    	double z = calcWeightedInputSum(this);
+    	double z = Math.exp(inputValue);
+//    	System.out.println(inputValue);
+//    	System.out.println(inputValue);
 		for(Node node : outputNodes) {
-			double nodeValue = calcWeightedInputSum(node);
-			sum+=Math.pow(Math.E, nodeValue);
+			sum+=Math.exp(node.getInput());
+//			System.out.println(node.inputValue);
 		}
-		return Math.pow(Math.E,z)/sum;
+//		System.out.println("a      "  +z);
+//		System.out.println("b       "+sum);
+		return z/sum;
     }
+    
     //weighted sum from parents
     public double calcWeightedInputSum(Node node) {
     	double value = 0;
     	for(NodeWeightPair in: node.parents) {
     		value+= in.node.outputValue * in.weight;
-    		//System.out.println(in.node.outputValue);
     	}
     	return value;
     }
@@ -159,7 +156,8 @@ public class Node {
     public double calcWeightedOutputDelta(ArrayList<Node> outputNodes,int nodeIndex) {
     	double value = 0;
     	for(Node node: outputNodes) {
-    		value+= node.parents.get(nodeIndex).weight*delta;
+    		value+= node.parents.get(nodeIndex).weight*node.delta;
+    		//System.out.println(node.parents.get(nodeIndex).weight+"  "+delta);
     	}
     	return value;
     }
