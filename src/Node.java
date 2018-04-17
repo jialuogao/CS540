@@ -145,7 +145,7 @@ public class Node {
     public double calcWeightedOutputDelta(ArrayList<Node> outputNodes,int nodeIndex) {
     	double value = 0;
     	for(Node node: outputNodes) {
-    		value+= node.parents.get(nodeIndex).weight*node.delta;
+    		value+= node.parents.get(nodeIndex).weight*node.getDelta();
     	}
     	return value;
     }
