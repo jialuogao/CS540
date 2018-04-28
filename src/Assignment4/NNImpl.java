@@ -1,3 +1,4 @@
+package Assignment4;
 import java.util.*;
 
 /**
@@ -64,8 +65,8 @@ public class NNImpl {
             Node node = new Node(4);
             //Connecting output layer nodes with hidden layer nodes
             for (int j = 0; j < hiddenNodes.size(); j++) {
-                NodeWeightPair nwp = new NodeWeightPair(hiddenNodes.get(j), outputWeights[i][j]);
-                node.parents.add(nwp);
+                NodeWeightPair nwp = new NodeWeightPair(hiddenNodes.get(j), outputWeights[i][j]);                
+            	node.parents.add(nwp);
             }
             outputNodes.add(node);
         }
@@ -80,7 +81,17 @@ public class NNImpl {
 
     public int predict(Instance instance) {
         // TODO: add code here
-        return -1;
+    	useNN(instance);
+    	int predict = 0;
+    	double max = Double.MIN_VALUE;
+    	for(int i=0; i<outputNodes.size(); i++) {
+    		double out = outputNodes.get(i).getOutput();
+    		if(out > max) {
+    			max = out;
+    			predict = i;
+    		}
+    	}
+        return predict;
     }
 
 
@@ -92,6 +103,34 @@ public class NNImpl {
 
     public void train() {
         // TODO: add code here
+    	for(int j = 0; j < maxEpoch; j++){
+	    	double totalE = 0;
+	    	Collections.shuffle(trainingSet,random);
+	    	for(Instance instance: trainingSet) {
+	    		useNN(instance);
+	    		for(int i =0;i<outputNodes.size();i++) {
+	    			Node outNode = outputNodes.get(i);
+	    			outNode.calculateDelta(instance.classValues.get(i), outputNodes,i);
+	    		}
+	    		for(int i = 0;i<hiddenNodes.size();i++) {
+	    			Node hidNode = hiddenNodes.get(i);
+	    			hidNode.calculateDelta(-99999,outputNodes, i);
+	    		}
+	    		for(Node node : outputNodes) {
+	    			node.updateWeight(learningRate);
+	    		}
+	    		for(Node node : hiddenNodes) {
+	    			node.updateWeight(learningRate);
+	    		}
+	        }
+	    	for(Instance inst : trainingSet) {
+	    		totalE+=loss(inst);
+	    	}
+	    	totalE/=trainingSet.size();
+	    	System.out.print("Epoch: " + j + ", Loss: ");
+	    	System.out.format("%.8e", totalE);
+	    	System.out.println();
+    	}
     }
 
     /**
@@ -101,6 +140,30 @@ public class NNImpl {
      */
     private double loss(Instance instance) {
         // TODO: add code here
-        return -1.0;
+    	useNN(instance);
+    	double ce = 0;
+    	for(int i =0 ; i<outputNodes.size();i++) {
+    		double g = outputNodes.get(i).getOutput();
+    		ce -= instance.classValues.get(i)*Math.log(g);
+    	}
+        return ce;
+    }
+    
+    private void useNN(Instance instance) {
+    	for(int i =0; i<inputNodes.size()-1;i++) {
+			Node node = inputNodes.get(i);
+    		node.setInput(instance.attributes.get(i));
+			node.calculateOutput(null);
+    	}
+    	for(Node node: hiddenNodes) {
+    		node.calcWeightedInputSum();
+    		node.calculateOutput(null);
+    	}
+    	for(Node node: outputNodes) {
+    		node.calcWeightedInputSum();
+    	}
+    	for(Node node: outputNodes) {
+    		node.calculateOutput(outputNodes);
+    	}
     }
 }
