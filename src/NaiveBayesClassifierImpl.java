@@ -30,6 +30,22 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
   	  m_v = v;
   	  m_map[0] = new HashMap<>();
   	  m_map[1] = new HashMap<>();
+  	  for(Instance inst : trainingData)
+  	  {
+  		  for(String word : inst.words) {
+  			  // Label label = word.label;
+  			  int count = 1;
+  			  if(m_map[0].get(word) != null) {
+  				 count = m_map[0].get(word);
+  				 m_map[0].put(word, count+1);
+  			  }
+  			  else {
+  				  m_map[0].put(word,count);  				  
+  			  }
+  		  }
+  	  }
+  	  
+  	  
   }
 
   /*
@@ -39,7 +55,17 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     // TODO : Implement
     m_sports_count = 0;
     m_business_count = 0;
-
+    for(Instance inst : trainingData) {
+    	if(inst.label==Label.BUSINESS) {
+    		m_business_count ++;
+    	}
+    	else if(inst.label==Label.SPORTS) {
+    		m_sports_count ++;
+    	}
+    	else {
+    		System.out.println(inst.label);/////////////testing
+    	}
+    }
   }
 
   /*
@@ -58,7 +84,14 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     // TODO : Implement
     m_sports_word_count = 0;
     m_business_word_count = 0;
-
+    for(Instance inst : trainingData) {
+    	if(inst.label==Label.BUSINESS) {
+			m_business_word_count+=inst.words.length;
+    	}
+    	else if(inst.label==Label.SPORTS) {
+			m_sports_word_count+=inst.words.length;
+    	}
+    }
   }
 
   /*
@@ -78,6 +111,12 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     // Calculate the probability for the label. No smoothing here.
     // Just the number of label counts divided by the number of documents.
     double ret = 0;
+    if(label==Label.BUSINESS) {
+    	ret = (double)m_business_count/(double)m_trainingData.length;
+    }
+    else if(label==Label.SPORTS) {
+    	ret = (double)m_sports_count/(double)m_trainingData.length;
+    }
     return ret;
   }
 
