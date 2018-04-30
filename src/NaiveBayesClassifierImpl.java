@@ -28,23 +28,31 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     // Use m_map[0].replace(word, count+1) to update the value
   	  m_trainingData = trainingData;
   	  m_v = v;
-  	  m_map[0] = new HashMap<>();
-  	  m_map[1] = new HashMap<>();
+  	  m_map[0] = new HashMap<>();//Sports
+  	  m_map[1] = new HashMap<>();//Business
   	  for(Instance inst : trainingData)
   	  {
+  		  int map = -1;
+  		  if(inst.label==Label.BUSINESS) {
+  			  map = 1;
+  		  }
+  		  else if(inst.label==Label.SPORTS) {
+  			  map = 0;
+  		  }
   		  for(String word : inst.words) {
   			  // Label label = word.label;
-  			  int count = 1;
-  			  if(m_map[0].get(word) != null) {
-  				 count = m_map[0].get(word);
-  				 m_map[0].put(word, count+1);
+  			  int count;
+  			  if(m_map[map].get(word) != null) {
+  				 count = m_map[map].get(word);
+  				 m_map[map].put(word, count+1);
   			  }
   			  else {
-  				  m_map[0].put(word,count);  				  
+  				  m_map[map].put(word,1);  				  
   			  }
   		  }
   	  }
-  	  
+  	  documents_per_label_count(trainingData);
+  	  words_per_label_count(trainingData);
   	  
   }
 
@@ -61,9 +69,6 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     	}
     	else if(inst.label==Label.SPORTS) {
     		m_sports_count ++;
-    	}
-    	else {
-    		System.out.println(inst.label);/////////////testing
     	}
     }
   }
@@ -130,6 +135,20 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     // Calculate the probability with Laplace smoothing for word in class(label)
     double ret = 0;
     m_delta = 0.00001;
+    if(label==Label.BUSINESS) {
+    	double prob = 0;
+    	if(m_map[1].get(word)!=null) {
+    		prob = m_map[1].get(word);    		
+    	}
+    	ret = (prob+m_delta)/(m_business_word_count+m_delta*m_v);
+    }
+    else if(label==Label.SPORTS) {
+    	double prob = 0;
+    	if(m_map[0].get(word)!=null) {
+    		prob = m_map[0].get(word);    		
+    	}
+    	ret = (prob+m_delta)/(m_sports_word_count+m_delta*m_v);
+    }
     return ret;
   }
 
@@ -143,8 +162,15 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     // Set the label to the class with larger log probability
     ClassifyResult ret = new ClassifyResult();
     ret.label = Label.SPORTS;
-    ret.log_prob_sports = 0;
-    ret.log_prob_business = 0;
+    ret.log_prob_sports = Math.log(p_l(Label.SPORTS));
+    ret.log_prob_business = Math.log(p_l(Label.BUSINESS));
+    for(String word:words) {
+    	ret.log_prob_sports+=Math.log(p_w_given_l(word,Label.SPORTS));
+    	ret.log_prob_business+=Math.log(p_w_given_l(word,Label.BUSINESS));
+    }
+    if(ret.log_prob_business>ret.log_prob_sports) {
+    	ret.label = Label.BUSINESS;
+    }
     return ret; 
   }
   
@@ -160,6 +186,25 @@ public class NaiveBayesClassifierImpl implements NaiveBayesClassifier {
     FP = 0;
     FN = 0;
     TN = 0;
+    for(Instance inst: testData) {
+    	ClassifyResult result = classify(inst.words);
+    	if(inst.label==result.label) {
+    		if(inst.label==Label.BUSINESS) {
+    			TN++;
+    		}
+    		else {
+    			TP++;
+    		}
+    	}
+    	else {
+    		if(inst.label==Label.BUSINESS) {
+    			FP++;
+    		}
+    		else {
+    			FN++;
+    		}
+    	}
+    }
     return new ConfusionMatrix(TP,FP,FN,TN);
   }
   
